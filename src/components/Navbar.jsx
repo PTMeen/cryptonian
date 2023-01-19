@@ -46,6 +46,7 @@ const Navbar = () => {
               variant="outline"
               icon={<RiMenu3Line size={25} />}
               onClick={onOpen}
+              colorScheme="cyan"
             />
           </Box>
         </Flex>
