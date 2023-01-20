@@ -9,6 +9,7 @@ import SignInPage from "./pages/SinginPage";
 import SingUpPage from "./pages/SignupPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const App = () => {
   const url =
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/signup" element={<SingUpPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <Footer />
     </>
   );
 };
