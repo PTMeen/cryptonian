@@ -18,9 +18,11 @@ import { Link } from "@chakra-ui/react";
 import { BsSun, BsMoon } from "react-icons/bs";
 
 import Logo from "./Logo";
+import { useAuthContext } from "../context/authContext";
 
 const MenuDrawer = ({ isOpen, onClose, btnRef }) => {
   const { colorMode, setColorMode } = useColorMode();
+  const { user, logout } = useAuthContext();
 
   return (
     <Drawer
@@ -58,35 +60,48 @@ const MenuDrawer = ({ isOpen, onClose, btnRef }) => {
             <Link as={RLink} to="/" onClick={onClose}>
               Home
             </Link>
-            <Link as={RLink} to="/account" onClick={onClose}>
-              Account
-            </Link>
+            {user?.uid && (
+              <Link as={RLink} to="/account" onClick={onClose}>
+                Account
+              </Link>
+            )}
           </VStack>
         </DrawerBody>
 
         <DrawerFooter>
-          <HStack gap={2} w="full">
+          {user?.uid ? (
             <Button
-              as={RLink}
-              flexGrow={1}
+              w="full"
               colorScheme="cyan"
               variant="outline"
-              to="/signin"
-              onClick={onClose}
+              onClick={logout}
             >
-              Sign In
+              Logout
             </Button>
-            <Button
-              as={RLink}
-              flexGrow={1}
-              colorScheme="cyan"
-              variant="solid"
-              to="/signup"
-              onClick={onClose}
-            >
-              Sign Up
-            </Button>
-          </HStack>
+          ) : (
+            <HStack gap={2} w="full">
+              <Button
+                as={RLink}
+                flexGrow={1}
+                colorScheme="cyan"
+                variant="outline"
+                to="/signin"
+                onClick={onClose}
+              >
+                Sign In
+              </Button>
+              <Button
+                as={RLink}
+                flexGrow={1}
+                colorScheme="cyan"
+                variant="solid"
+                to="/signup"
+                onClick={onClose}
+              >
+                Sign Up
+              </Button>
+            </HStack>
+          )}
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

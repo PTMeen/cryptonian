@@ -15,18 +15,36 @@ import {
   Text,
   FormErrorMessage,
 } from "@chakra-ui/react";
-import { Link as RLink } from "react-router-dom";
+import { Link as RLink, useNavigate } from "react-router-dom";
 
+import { useAuthContext } from "../context/authContext";
 import { signupSchema } from "../formValidation";
 import PasswordVisibilityButton from "../components/PasswordVisibilityButton";
+import FormAlert from "../components/FormAlert";
 
 const SignupPage = () => {
+  const { signUp } = useAuthContext();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
-  const handleSubmit = (values) => {
-    console.log(values);
+  const handleSubmit = async (values) => {
+    setError(false);
+    setIsLoading(true);
+    try {
+      const { email, password } = values;
+      await signUp(email, password);
+      navigate("/account");
+    } catch (err) {
+      console.log(err.message);
+      setError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -41,6 +59,7 @@ const SignupPage = () => {
         px={{ base: 4, md: 8 }}
       >
         <Heading as="h1">Sign Up</Heading>
+        {error && <FormAlert status="error" msg="Invalid Credentials" />}
         <Box my={8}>
           <Formik
             initialValues={{
@@ -106,6 +125,8 @@ const SignupPage = () => {
                       colorScheme="cyan"
                       w="full"
                       rightIcon={<AiOutlineArrowRight size={20} />}
+                      isDisabled={isLoading}
+                      isLoading={isLoading}
                     >
                       Sign Up
                     </Button>

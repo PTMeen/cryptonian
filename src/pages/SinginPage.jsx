@@ -14,19 +14,37 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
-import { Link as RLink } from "react-router-dom";
+import { Link as RLink, useNavigate } from "react-router-dom";
 import { Formik, Field } from "formik";
 
 import { singinSchema } from "../formValidation";
 import PasswordVisibilityButton from "../components/PasswordVisibilityButton";
+import { useAuthContext } from "../context/authContext";
+import FormAlert from "../components/FormAlert";
 
 const SinginPage = () => {
+  const { signIn } = useAuthContext();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
-  const handleSubmit = (values) => {
-    console.log(values);
+  const handleSubmit = async (values) => {
+    setError(false);
+    setIsLoading(true);
+    try {
+      const { email, password } = values;
+      await signIn(email, password);
+      navigate("/account");
+    } catch (err) {
+      console.log(err.message);
+      setError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -41,6 +59,8 @@ const SinginPage = () => {
         px={{ base: 4, md: 8 }}
       >
         <Heading as="h1">Sign In</Heading>
+        {error && <FormAlert status="error" msg="Invalid Credentials" />}
+
         <Box my={8}>
           <Formik
             initialValues={{
@@ -85,6 +105,8 @@ const SinginPage = () => {
                       colorScheme="cyan"
                       w="full"
                       rightIcon={<AiOutlineArrowRight size={20} />}
+                      isDisabled={isLoading}
+                      isLoading={isLoading}
                     >
                       Sign In
                     </Button>

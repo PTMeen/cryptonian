@@ -10,6 +10,7 @@ import SingUpPage from "./pages/SignupPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 const App = () => {
   const url =
@@ -29,7 +30,14 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage coins={coins} />} />
         <Route path="/coins/:coinId" element={<SingleCoinPage />} />
-        <Route path="/account" element={<AccountPage />} />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <AccountPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SingUpPage />} />
         <Route path="*" element={<NotFoundPage />} />

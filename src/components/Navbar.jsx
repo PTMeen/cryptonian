@@ -13,8 +13,11 @@ import { RiMenu3Line } from "react-icons/ri";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 import MenuDrawer from "./MenuDrawer";
+import { useAuthContext } from "../context/authContext";
 
 const Navbar = () => {
+  const { user, logout } = useAuthContext();
+
   const btnRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -31,12 +34,20 @@ const Navbar = () => {
               <Box>
                 <ThemeToggle />
               </Box>
-              <Button variant="outline" as={RLink} to="/signin">
-                Sign In
-              </Button>
-              <Button colorScheme="cyan" as={RLink} to="/signup">
-                Sign Up
-              </Button>
+              {user?.uid ? (
+                <Button colorScheme="cyan" onClick={logout}>
+                  Logout
+                </Button>
+              ) : (
+                <Box>
+                  <Button variant="outline" as={RLink} mr={4} to="/signin">
+                    Sign In
+                  </Button>
+                  <Button colorScheme="cyan" as={RLink} to="/signup">
+                    Sign Up
+                  </Button>
+                </Box>
+              )}
             </Flex>
           </Box>
 
