@@ -21,7 +21,7 @@ const TrendingCoins = () => {
         gap={8}
       >
         {trendings.map((trending) => {
-          return <TrendingCoinItem {...trending.item} />;
+          return <TrendingCoinItem key={trending.coin_id} {...trending.item} />;
         })}
       </Grid>
     </>

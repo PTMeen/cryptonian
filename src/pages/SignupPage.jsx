@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BiShow, BiHide } from "react-icons/bi";
+import { Formik, Field } from "formik";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import {
   Box,
@@ -9,70 +9,112 @@ import {
   FormControl,
   FormLabel,
   Heading,
-  IconButton,
   Input,
   InputGroup,
-  InputRightElement,
   Link,
   Text,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { Link as RLink } from "react-router-dom";
+
+import { signupSchema } from "../formValidation";
+import PasswordVisibilityButton from "../components/PasswordVisibilityButton";
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
+  const handleSubmit = (values) => {
+    console.log(values);
+  };
+
   return (
-    <Container as="main" maxW="1140px" h="85vh" p={16}>
-      <Box w="450px" mx="auto" shadow="2xl" borderRadius="2xl" py={4} px={8}>
+    <Container as="main" maxW="1140px" h="85vh" p={{ base: 4, md: 16 }}>
+      <Box
+        w="90%"
+        maxW="450px"
+        mx="auto"
+        shadow="2xl"
+        borderRadius="2xl"
+        py={4}
+        px={{ base: 4, md: 8 }}
+      >
         <Heading as="h1">Sign Up</Heading>
         <Box my={8}>
-          <form>
-            <FormControl>
-              <FormLabel>Email</FormLabel>
-              <Input type="email" />
-            </FormControl>
-            <FormControl my={4}>
-              <FormLabel>Password</FormLabel>
-              <InputGroup>
-                <Input type={showPassword ? "text" : "password"} />
-                <InputRightElement>
-                  <IconButton
-                    variant="ghost"
-                    onClick={toggleShowPassword}
-                    icon={
-                      showPassword ? <BiHide size={20} /> : <BiShow size={20} />
+          <Formik
+            initialValues={{
+              email: "",
+              password: "",
+              confirmPassword: "",
+            }}
+            validationSchema={signupSchema}
+            onSubmit={(values) => handleSubmit(values)}
+          >
+            {({ handleSubmit, errors, touched }) => {
+              return (
+                <form onSubmit={handleSubmit}>
+                  <FormControl isInvalid={!!errors.email && touched.email}>
+                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <Field as={Input} id="email" name="email" type="email" />
+                    <FormErrorMessage>{errors.email}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl
+                    my={4}
+                    isInvalid={!!errors.password && touched.password}
+                  >
+                    <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                      <Field
+                        as={Input}
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                      />
+                      <PasswordVisibilityButton
+                        showPassword={showPassword}
+                        toggleShowPassword={toggleShowPassword}
+                      />
+                    </InputGroup>
+                    <FormErrorMessage>{errors.password}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl
+                    isInvalid={
+                      !!errors.confirmPassword && touched.confirmPassword
                     }
-                  />
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Confirm Password</FormLabel>
-              <InputGroup>
-                <Input type={showPassword ? "text" : "password"} />
-                <InputRightElement>
-                  <IconButton
-                    variant="ghost"
-                    onClick={toggleShowPassword}
-                    icon={
-                      showPassword ? <BiHide size={20} /> : <BiShow size={20} />
-                    }
-                  />
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-            <Box mt={4}>
-              <Button
-                colorScheme="cyan"
-                w="full"
-                rightIcon={<AiOutlineArrowRight size={20} />}
-              >
-                Sign Up
-              </Button>
-            </Box>
-          </form>
+                  >
+                    <FormLabel>Confirm Password</FormLabel>
+                    <InputGroup>
+                      <Field
+                        as={Input}
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={showPassword ? "text" : "password"}
+                      />
+                      <PasswordVisibilityButton
+                        showPassword={showPassword}
+                        toggleShowPassword={toggleShowPassword}
+                      />
+                    </InputGroup>
+                    <FormErrorMessage>
+                      {errors.confirmPassword}
+                    </FormErrorMessage>
+                  </FormControl>
+                  <Box mt={4}>
+                    <Button
+                      type="submit"
+                      colorScheme="cyan"
+                      w="full"
+                      rightIcon={<AiOutlineArrowRight size={20} />}
+                    >
+                      Sign Up
+                    </Button>
+                  </Box>
+                </form>
+              );
+            }}
+          </Formik>
+
           <Flex justify="center" mt={4}>
             <Text>Already a member? </Text>
             <Link color="cyan.500" ml={2} as={RLink} to="/signin">
