@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Heading, HStack, Text } from "@chakra-ui/react";
+import { Box, Container, Flex, HStack } from "@chakra-ui/react";
 import FooterDetails from "./FooterDetails";
 import NewsLatter from "./NewsLatter";
 
