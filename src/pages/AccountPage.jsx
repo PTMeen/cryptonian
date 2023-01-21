@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Box,
   Button,
+  Center,
   Container,
   Heading,
   HStack,
@@ -52,20 +53,19 @@ const AccountPage = () => {
           </HStack>
         </Box>
       </Box>
-      <Box
-        as="section"
-        minH="350px"
-        my={16}
-        p={8}
-        borderRadius="2xl"
-        shadow="2xl"
-      >
+      <Box as="section" my={16} p={8} borderRadius="2xl" shadow="2xl">
         <Heading as="h2" size={{ base: "md", md: "lg" }} mb={4}>
           Watch List
         </Heading>
-        <Box>
-          <WatchListTable coins={coins} removeCoin={removeCoin} />
-        </Box>
+        {coins.length ? (
+          <Box>
+            <WatchListTable coins={coins} removeCoin={removeCoin} />
+          </Box>
+        ) : (
+          <Center h="full">
+            <Text>No coins on your watch list.</Text>
+          </Center>
+        )}
       </Box>
     </Container>
   );

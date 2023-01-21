@@ -9,6 +9,7 @@ import {
   Flex,
   IconButton,
   useToast,
+  Tooltip,
 } from "@chakra-ui/react";
 import { Link as RLink } from "react-router-dom";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
@@ -36,14 +37,15 @@ const CoinTableItem = ({
 
   const userRef = doc(db, "users", `${user?.email}`);
   const addCoinToWatchList = async () => {
-    if (!user.email) {
+    if (!user?.email) {
       toast({
+        title: "Error",
+        description: "Please signin to add coin to watch list.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
         position: "top",
-        render: () => (
-          <Box color="white" p={3} bg="orange.500">
-            Please signin to add coin to your watch list.
-          </Box>
-        ),
+        variant: "left-accent",
       });
 
       return;
@@ -64,12 +66,14 @@ const CoinTableItem = ({
   return (
     <Tr>
       <Td>
-        <IconButton
-          onClick={addCoinToWatchList}
-          variant="ghost"
-          size="sm"
-          icon={savedCoin ? <AiFillStar /> : <AiOutlineStar />}
-        />
+        <Tooltip hasArrow label={`add ${name} to your watch list`}>
+          <IconButton
+            onClick={addCoinToWatchList}
+            variant="ghost"
+            size="sm"
+            icon={savedCoin ? <AiFillStar /> : <AiOutlineStar />}
+          />
+        </Tooltip>
       </Td>
       <Td>{market_cap_rank}</Td>
       <Td>
