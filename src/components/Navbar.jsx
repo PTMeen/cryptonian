@@ -6,6 +6,7 @@ import {
   Box,
   IconButton,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
 import { Link as RLink } from "react-router-dom";
 import { RiMenu3Line } from "react-icons/ri";
@@ -23,19 +24,31 @@ const Navbar = () => {
 
   return (
     <>
-      <Container maxW="1140px" as="header" py={8} shadow="xl" borderRadius="xl">
+      <Container
+        maxW="1140px"
+        as="header"
+        py={8}
+        px={8}
+        shadow="xl"
+        borderRadius="xl"
+      >
         <Flex justify="space-between" alignItems="end">
           <Box>
             <Logo />
           </Box>
 
           <Box display={{ base: "none", md: "block" }}>
-            <Flex gap={4}>
+            <Flex gap={4} align="flex-end">
               <Box>
                 <ThemeToggle />
               </Box>
+              {user?.uid && (
+                <Button variant="ghost" as={RLink} to="/account">
+                  Account
+                </Button>
+              )}
               {user?.uid ? (
-                <Button colorScheme="cyan" onClick={logout}>
+                <Button variant="outline" colorScheme="cyan" onClick={logout}>
                   Logout
                 </Button>
               ) : (

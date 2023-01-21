@@ -1,7 +1,22 @@
-import { Td, Tr, Link, Box, Image, Text, Flex } from "@chakra-ui/react";
+import { useState } from "react";
+import {
+  Td,
+  Tr,
+  Link,
+  Box,
+  Image,
+  Text,
+  Flex,
+  IconButton,
+  useToast,
+} from "@chakra-ui/react";
 import { Link as RLink } from "react-router-dom";
-import { AiFillStar } from "react-icons/ai";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { Sparklines, SparklinesLine } from "react-sparklines";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+
+import { useAuthContext } from "../context/authContext";
+import { db } from "../firebase";
 
 const CoinTableItem = ({
   id,
@@ -15,10 +30,46 @@ const CoinTableItem = ({
   total_volume,
   sparkline_in_7d,
 }) => {
+  const [savedCoin, setSavedCoin] = useState(false);
+  const toast = useToast();
+  const { user } = useAuthContext();
+
+  const userRef = doc(db, "users", `${user?.email}`);
+  const addCoinToWatchList = async () => {
+    if (!user.email) {
+      toast({
+        position: "top",
+        render: () => (
+          <Box color="white" p={3} bg="orange.500">
+            Please signin to add coin to your watch list.
+          </Box>
+        ),
+      });
+
+      return;
+    }
+
+    setSavedCoin(true);
+    await updateDoc(userRef, {
+      watchList: arrayUnion({
+        id,
+        name,
+        image,
+        rank: market_cap_rank,
+        symbol,
+      }),
+    });
+  };
+
   return (
     <Tr>
       <Td>
-        <AiFillStar />
+        <IconButton
+          onClick={addCoinToWatchList}
+          variant="ghost"
+          size="sm"
+          icon={savedCoin ? <AiFillStar /> : <AiOutlineStar />}
+        />
       </Td>
       <Td>{market_cap_rank}</Td>
       <Td>
